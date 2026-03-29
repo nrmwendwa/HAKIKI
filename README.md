@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# HAKIKI Scanner Project
 
 TODO: Document your project here
