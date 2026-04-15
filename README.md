@@ -1,3 +1,4 @@
-# Welcome to your Lovable project
+# HAKIKI Scanner
+Web Application to Verify Validity of Tanzania Governmernment Information in Images and Text
 
-TODO: Document your project here
+
