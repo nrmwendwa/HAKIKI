@@ -1,3 +1,4 @@
-# Welcome to your Lovable project
+# HAKIKI SCANNER
+Combating misinformation in Tanzania
 
-TODO: Document your project here
+
