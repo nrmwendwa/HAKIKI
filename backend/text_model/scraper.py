@@ -9,9 +9,10 @@ import json
 import time
 
 scraper = cloudscraper.create_scraper()
-DATA_PATH = Path(__file__).with_name("tanzania_publicinfo_dataset.csv")
-LEGACY_DATA_PATH = Path(__file__).with_name("tanzania_political_dataset.csv")
-SOURCE_DATA_DIR = Path(__file__).with_name("source_data")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DATA_PATH = REPO_ROOT / "data" / "tanzania_publicinfo_dataset.csv"
+LEGACY_DATA_PATH = REPO_ROOT / "data" / "tanzania_political_dataset.csv"
+SOURCE_DATA_DIR = REPO_ROOT / "data" / "source_data"
 DATA_SCHEMA_FIELDS = [
     "statement",
     "url",

@@ -9,9 +9,10 @@ import joblib
 import re
 from difflib import SequenceMatcher
 
-MODEL_PATH = Path(__file__).with_name("tanzania_fact_model.pkl")
-VECTORIZER_PATH = Path(__file__).with_name("tanzania_vectorizer.pkl")
-DATA_PATH = Path(__file__).with_name("tanzania_publicinfo_dataset.csv")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+MODEL_PATH = REPO_ROOT / "models" / "tanzania_fact_model.pkl"
+VECTORIZER_PATH = REPO_ROOT / "models" / "tanzania_vectorizer.pkl"
+DATA_PATH = REPO_ROOT / "data" / "tanzania_publicinfo_dataset.csv"
 
 def load_training_data():
     """Load training data from CSV"""
@@ -94,6 +95,12 @@ def predict_statement(text):
     """Predict if a statement is verified or false"""
     clf, vectorizer = load_model()
     if clf is None:
+        return {"verified": 0.0, "false": 0.0, "unverified": 1.0}
+
+    # A single-class model (e.g. trained on an all-"verified" dataset) can only
+    # ever return its one class at 100%. Refuse to answer rather than hand out
+    # a meaningless "verified" stamp.
+    if len(getattr(clf, "classes_", [])) < 2:
         return {"verified": 0.0, "false": 0.0, "unverified": 1.0}
 
     # Preprocess input

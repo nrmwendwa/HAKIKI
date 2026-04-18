@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 TEXT_MODEL_DIR = Path(__file__).parent / "text_model"
 sys.path.insert(0, str(TEXT_MODEL_DIR))
 
-DATA_PATH = TEXT_MODEL_DIR / "tanzania_publicinfo_dataset.csv"
+DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "tanzania_publicinfo_dataset.csv"
 SIMILARITY_THRESHOLD = 0.6
 
 
@@ -131,8 +131,8 @@ def verify_claim(input_text: str) -> dict:
 
         is_statistical_match = compare_statistics(input_text, claim["statement"])
 
-        if is_statistical_match or similarity > 0.8:
-            label = claim.get("label", "verified")
+        if (is_statistical_match and similarity >= 0.75) or similarity > 0.85:
+            label = claim.get("label", "unverified")
             confidence = min(similarity + 0.2, 0.95)
         else:
             label = "unverified"
@@ -160,18 +160,32 @@ def verify_claim(input_text: str) -> dict:
         from fake_news_classifier import predict_statement
 
         ml_scores = predict_statement(input_text)
-        best_label = max(ml_scores.items(), key=lambda x: x[1])
+        best_label_name, best_label_score = max(ml_scores.items(), key=lambda x: x[1])
+
+        # If the classifier is degenerate (single-class model) or unconfident,
+        # say so honestly instead of surfacing a meaningless verdict.
+        if best_label_name == "unverified" or best_label_score < 0.55:
+            return {
+                "label": "haijathibitishwa",
+                "confidence": 0.0,
+                "source": "Hakuna data ya kutosha",
+                "details": (
+                    "Dai halijapatikana kwenye orodha ya madai yaliyothibitishwa, "
+                    "na mfumo wa ML hauna data ya kutosha kutoa uamuzi wa uhakika."
+                ),
+                "scores": {k: round(v * 100, 1) for k, v in ml_scores.items()},
+            }
 
         label_map = {
             "verified": "imethibitishwa",
             "false": "ya_uongo",
             "unverified": "haijathibitishwa",
         }
-        display_label = label_map.get(best_label[0], best_label[0])
+        display_label = label_map.get(best_label_name, best_label_name)
 
         return {
             "label": display_label,
-            "confidence": round(best_label[1] * 100, 1),
+            "confidence": round(best_label_score * 100, 1),
             "source": "ML Classifier",
             "details": "Hakuna mechi ya moja kwa moja, inatumia uainishaji wa kujifunza kwa mashine.",
             "scores": {k: round(v * 100, 1) for k, v in ml_scores.items()},

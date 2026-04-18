@@ -29,7 +29,7 @@ class ModelService:
     on uploaded images to detect real vs AI-generated vs suspicious faces.
     """
 
-    def __init__(self, model_path: str = "models/efficientnet3class_full_model.pth"):
+    def __init__(self, model_path: str = "../models/efficientnet3class_full_model.pth"):
         """
         Initialize the model service
 
@@ -247,3 +247,23 @@ class ModelService:
                 logger.info("✓ Model cleanup completed")
         except Exception as e:
             logger.warning(f"Error during cleanup: {e}")
+
+
+_instance: "ModelService | None" = None
+
+
+def get_model_service() -> "ModelService":
+    """Return a lazily-initialized process-wide ModelService singleton."""
+    global _instance
+    if _instance is None:
+        from config import get_settings
+
+        settings = get_settings()
+        _instance = ModelService(model_path=str(settings.get_model_path()))
+    return _instance
+
+
+def set_model_service(instance: "ModelService") -> None:
+    """Register an existing ModelService as the process-wide singleton."""
+    global _instance
+    _instance = instance
