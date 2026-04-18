@@ -2,7 +2,155 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Shield, ArrowRight, ScanFace, Zap, Globe, Users, FileText, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-scan.jpg";
+
+const VerificationHeroVisual = () => (
+  <div
+    className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-border"
+    style={{ background: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}
+    aria-hidden="true"
+  >
+    <div className="absolute inset-0 bg-grid-pattern opacity-30" />
+    <div
+      className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
+      style={{ background: "hsl(var(--primary) / 0.2)" }}
+    />
+
+    <div className="relative h-full w-full">
+      <motion.div
+        className="absolute"
+        style={{ left: "8%", top: "14%", width: "44%", transform: "rotate(-6deg)" }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <div
+          className="relative overflow-hidden rounded-xl border"
+          style={{
+            background: "hsl(var(--card))",
+            borderColor: "hsl(var(--border))",
+            boxShadow: "0 16px 40px hsl(220 20% 2% / 0.5)",
+          }}
+        >
+          <div className="relative aspect-[4/3] w-full overflow-hidden">
+            <svg viewBox="0 0 200 150" className="h-full w-full" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="heroPhotoSky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(28 75% 60%)" />
+                  <stop offset="100%" stopColor="hsl(12 60% 38%)" />
+                </linearGradient>
+              </defs>
+              <rect width="200" height="150" fill="url(#heroPhotoSky)" />
+              <circle cx="148" cy="48" r="14" fill="hsl(48 95% 72%)" />
+              <path d="M0 112 L42 78 L78 100 L118 62 L158 88 L200 72 L200 150 L0 150 Z" fill="hsl(220 30% 15%)" />
+              <path d="M0 130 L55 104 L100 122 L150 92 L200 110 L200 150 L0 150 Z" fill="hsl(220 30% 10%)" />
+            </svg>
+          </div>
+          <div
+            className="absolute -right-3 -top-3 flex h-9 w-9 items-center justify-center rounded-full"
+            style={{
+              background: "hsl(var(--destructive))",
+              boxShadow: "0 6px 18px hsl(var(--destructive) / 0.5)",
+              border: "3px solid hsl(var(--card))",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round">
+              <line x1="6" y1="6" x2="18" y2="18" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+            </svg>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div
+        className="absolute"
+        style={{ right: "6%", bottom: "14%", width: "44%", transform: "rotate(5deg)" }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.35 }}
+      >
+        <div
+          className="relative rounded-2xl rounded-bl-sm border px-4 py-3"
+          style={{
+            background: "hsl(var(--card))",
+            borderColor: "hsl(var(--border))",
+            boxShadow: "0 16px 40px hsl(220 20% 2% / 0.5)",
+          }}
+        >
+          <div className="space-y-2">
+            <div className="h-2 w-full rounded-full" style={{ background: "hsl(var(--muted-foreground) / 0.45)" }} />
+            <div className="h-2 w-11/12 rounded-full" style={{ background: "hsl(var(--muted-foreground) / 0.4)" }} />
+            <div className="h-2 w-8/12 rounded-full" style={{ background: "hsl(var(--muted-foreground) / 0.35)" }} />
+          </div>
+          <div
+            className="absolute -bottom-2 left-2 h-4 w-4 rotate-45 border-b border-l"
+            style={{ background: "hsl(var(--card))", borderColor: "hsl(var(--border))" }}
+          />
+          <div
+            className="absolute -right-3 -top-3 flex h-9 w-9 items-center justify-center rounded-full"
+            style={{
+              background: "hsl(var(--safe))",
+              boxShadow: "0 6px 18px hsl(var(--safe) / 0.5)",
+              border: "3px solid hsl(var(--card))",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--safe-foreground))" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="5 12 10 17 19 7" />
+            </svg>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div
+        className="absolute left-1/2 top-1/2"
+        style={{ width: "48%", aspectRatio: "1 / 1", translateX: "-50%", translateY: "-50%" }}
+        initial={{ opacity: 0, scale: 0.7, rotate: -20 }}
+        animate={{ opacity: 1, scale: 1, rotate: -12 }}
+        transition={{ duration: 0.6, delay: 0.55, type: "spring", stiffness: 160 }}
+      >
+        <motion.div
+          className="h-full w-full"
+          animate={{ y: [-4, 4, -4], rotate: [-12, -10, -12] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <svg viewBox="0 0 200 200" className="h-full w-full overflow-visible">
+            <defs>
+              <linearGradient id="lensRim" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="hsl(var(--primary))" />
+                <stop offset="100%" stopColor="hsl(var(--accent))" />
+              </linearGradient>
+              <radialGradient id="lensGlass" cx="0.35" cy="0.3">
+                <stop offset="0%" stopColor="hsl(var(--primary) / 0.35)" />
+                <stop offset="55%" stopColor="hsl(var(--primary) / 0.1)" />
+                <stop offset="100%" stopColor="hsl(var(--primary) / 0.05)" />
+              </radialGradient>
+            </defs>
+            <line
+              x1="132"
+              y1="132"
+              x2="188"
+              y2="188"
+              stroke="url(#lensRim)"
+              strokeWidth="22"
+              strokeLinecap="round"
+            />
+            <line
+              x1="132"
+              y1="132"
+              x2="188"
+              y2="188"
+              stroke="hsl(220 20% 4%)"
+              strokeWidth="10"
+              strokeLinecap="round"
+            />
+            <circle cx="82" cy="82" r="62" fill="url(#lensGlass)" stroke="url(#lensRim)" strokeWidth="10" />
+            <circle cx="82" cy="82" r="62" fill="none" stroke="hsl(var(--background))" strokeWidth="3" opacity="0.7" />
+            <ellipse cx="60" cy="58" rx="20" ry="10" fill="white" opacity="0.25" transform="rotate(-30 60 58)" />
+          </svg>
+        </motion.div>
+      </motion.div>
+    </div>
+  </div>
+);
 
 const HeroSection = () => (
   <section className="relative min-h-screen overflow-hidden pt-16">
@@ -30,14 +178,9 @@ const HeroSection = () => (
           HAKIKI SCANNER inatambua picha bandia na kuthibitisha taarifa zinazosambazwa mtandaoni. Pakia picha au andika maandishi na upate uamuzi wa papo hapo.
         </p>
         <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
-          <Link to="/scanner">
+          <Link to="/scan">
             <Button variant="hero" size="lg" className="h-14 px-8 text-base">
-              Skani Picha <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          <Link to="/text-checker">
-            <Button variant="heroOutline" size="lg" className="h-14 px-8 text-base">
-              Hakiki Maandishi
+              Anza Kuhakiki <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </div>
@@ -50,16 +193,7 @@ const HeroSection = () => (
       >
         <div className="relative mx-auto max-w-lg">
           <div className="absolute -inset-4 rounded-2xl bg-primary/10 blur-2xl" />
-          <img
-            src={heroImage}
-            alt="AI image and text verification visualization"
-            className="relative rounded-2xl border border-border shadow-2xl"
-            width={1280}
-            height={720}
-          />
-          <div className="absolute inset-0 rounded-2xl">
-            <div className="scanner-line absolute left-0 right-0 top-0" />
-          </div>
+          <VerificationHeroVisual />
         </div>
       </motion.div>
     </div>
@@ -82,15 +216,10 @@ const CTASection = () => (
         <p className="mt-4 text-muted-foreground">
           Jilinde dhidi ya habari za uongo na picha bandia. Jaribu HAKIKI SCANNER sasa — ni bure.
         </p>
-        <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <Link to="/scanner">
+        <div className="mt-8 flex justify-center">
+          <Link to="/scan">
             <Button variant="hero" size="lg" className="h-14 px-10 text-base">
-              Skani Picha <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          <Link to="/text-checker">
-            <Button variant="heroOutline" size="lg" className="h-14 px-10 text-base">
-              Hakiki Maandishi <ArrowRight className="ml-2 h-5 w-5" />
+              Anza Kuhakiki <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </div>
@@ -133,7 +262,7 @@ const features = [
 ];
 
 const FeaturesSection = () => (
-  <section className="py-24 bg-secondary/30">
+  <section id="vipengele" className="scroll-mt-20 py-24 bg-secondary/30">
     <div className="container mx-auto px-4">
       <motion.div
         className="text-center mb-16"
@@ -196,7 +325,7 @@ const steps = [
 ];
 
 const HowItWorksSection = () => (
-  <section className="py-24">
+  <section id="inavyofanya-kazi" className="scroll-mt-20 py-24">
     <div className="container mx-auto px-4">
       <motion.div
         className="text-center mb-16"

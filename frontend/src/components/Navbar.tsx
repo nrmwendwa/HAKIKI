@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Shield, ShieldCheck, ShieldAlert, FileText } from "lucide-react";
+import { Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -16,22 +16,19 @@ const Navbar = () => {
           <Link to="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Nyumbani
           </Link>
-          <Link to="/scanner" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Skani Picha
+          <Link to="/scan" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Hakiki
           </Link>
-          <Link to="/text-checker" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Hakiki Taarifa
-          </Link>
-          <Link to="/features" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link to="/#vipengele" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Vipengele
           </Link>
-          <Link to="/how-it-works" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link to="/#inavyofanya-kazi" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Inavyofanya Kazi
           </Link>
         </div>
-        <Link to="/scanner">
+        <Link to="/scan">
           <Button variant="hero" size="lg">
-            Skani Sasa
+            Anza Kuhakiki
           </Button>
         </Link>
       </div>
