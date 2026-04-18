@@ -6,21 +6,29 @@ Complete setup for running both the frontend and backend together.
 
 ```
 hakiki-scanner/
-├── backend/                 # FastAPI backend
+├── backend/                 # FastAPI backend (Python source only)
 │   ├── main.py
 │   ├── config.py
 │   ├── model_service.py
+│   ├── text_verification.py
 │   ├── requirements.txt
 │   ├── .env.example
-│   └── models/
-│       └── efficientnet3class_full_model.pth
-├── src/                     # React frontend
-│   ├── components/
-│   ├── pages/
-│   └── App.tsx
-├── package.json
-├── vite.config.ts
-└── .env.example
+│   └── text_model/
+│       ├── fake_news_classifier.py
+│       └── scraper.py
+├── frontend/                # React/Vite web app
+│   ├── src/
+│   ├── public/
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── .env.example
+├── models/                  # Trained ML weights
+│   ├── efficientnet3class_full_model.pth
+│   ├── tanzania_fact_model.pkl
+│   └── tanzania_vectorizer.pkl
+└── data/                    # Raw datasets
+    └── tanzania_publicinfo_dataset.csv
 ```
 
 ## Quick Start
@@ -45,9 +53,12 @@ The backend will be available at: **http://localhost:8000**
 
 ### 2. Frontend Setup
 
-In a **new terminal** from the root directory:
+In a **new terminal**:
 
 ```bash
+# Navigate to frontend directory
+cd frontend
+
 # Install dependencies
 npm install
 
@@ -73,7 +84,7 @@ API_PORT=8000
 DEBUG=False
 
 # Model Configuration
-MODEL_PATH=models/efficientnet3class_full_model.pth
+MODEL_PATH=../models/efficientnet3class_full_model.pth
 DEVICE=cuda  # or 'cpu' if no GPU
 
 # CORS - Add frontend URLs here
@@ -82,7 +93,7 @@ CORS_ORIGINS=http://localhost:8080,http://localhost:3000,http://localhost:5173
 
 ### Frontend (.env.local)
 
-Located in root `.env.local`:
+Located in `frontend/.env.local`:
 
 ```bash
 # API URL - Must match backend address
@@ -129,9 +140,9 @@ API_PORT=8001
 ```
 Error: Model file not found
 ```
-- Ensure `models/efficientnet3class_full_model.pth` exists
-- Check `MODEL_PATH` in `backend/.env`
-- Path is relative to backend directory
+- Ensure `models/efficientnet3class_full_model.pth` exists at the repo root
+- Check `MODEL_PATH` in `backend/.env` (defaults to `../models/efficientnet3class_full_model.pth`)
+- Relative paths are resolved from the backend directory
 
 ### CUDA errors
 If you don't have a GPU or get CUDA errors:
@@ -151,6 +162,7 @@ python main.py
 
 ### Terminal 2 - Frontend
 ```bash
+cd frontend
 npm run dev
 # Runs on http://localhost:8080
 ```
@@ -163,7 +175,7 @@ npm run dev
 - If changes don't appear, manually restart: `Ctrl+C` then `python main.py`
 
 **Frontend Changes:**
-- Edit files in `src/`
+- Edit files in `frontend/src/`
 - Changes auto-apply via Vite hot module replacement
 - Check browser console for errors
 
@@ -194,9 +206,9 @@ See `backend/README.md` for production deployment options:
 ## Key Files
 
 **Frontend Integration Points:**
-- `src/components/ScannerPage.tsx` - Makes API calls to `/predict`
-- `src/components/Navbar.tsx` - Navigation and branding
-- `.env.local` - Frontend configuration
+- `frontend/src/components/ScannerPage.tsx` - Makes API calls to `/predict`
+- `frontend/src/components/Navbar.tsx` - Navigation and branding
+- `frontend/.env.local` - Frontend configuration
 
 **Backend Integration Points:**
 - `backend/main.py` - FastAPI app with `/predict` endpoint
@@ -229,7 +241,7 @@ When you upload an image, you get:
 ## Next Steps
 
 1. ✅ Run backend: `cd backend && python main.py`
-2. ✅ Run frontend: `npm run dev`
+2. ✅ Run frontend: `cd frontend && npm run dev`
 3. ✅ Open http://localhost:8080
 4. ✅ Test the scanner with images
 
