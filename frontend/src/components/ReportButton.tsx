@@ -33,14 +33,10 @@ const ReportButton = ({
   }
 
   return (
-    <Button
-      variant="outline"
-      className={className ?? "w-full"}
-      onClick={() => {
-        window.location.href = mailto;
-      }}
-    >
-      <Flag className="mr-2 h-4 w-4" /> {label}
+    <Button variant="outline" className={className ?? "w-full"} asChild>
+      <a href={mailto}>
+        <Flag className="mr-2 h-4 w-4" /> {label}
+      </a>
     </Button>
   );
 };

@@ -3,8 +3,8 @@
 The engine combines three signals (claims, image authenticity, source trust),
 renormalizes weights over present signals, and thresholds the weighted score
 to produce a verdict. Verification for textual claims is delegated to
-``text_verification.verify_claim`` - the engine itself never asks an LLM for
-the final verdict.
+``verification.verify_claim_online`` (DDG search + Gemini) - the engine
+itself never asks an LLM for the final verdict.
 """
 
 from __future__ import annotations

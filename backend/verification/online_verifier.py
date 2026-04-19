@@ -35,11 +35,7 @@ def _no_evidence(claim: str, detail: str) -> dict:
 
 
 def verify_claim_online(claim: str, max_results: int = 6) -> dict:
-    """Verify a single claim against DDG search results using the LLM.
-
-    Returns a dict compatible with the legacy ``verify_claim`` shape so the
-    decision engine needs no changes.
-    """
+    """Verify a single claim against DDG search results using the LLM."""
     claim = (claim or "").strip()
     if not claim:
         return _no_evidence(claim, "Dai tupu.")

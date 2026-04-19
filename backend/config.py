@@ -1,13 +1,12 @@
 """
 Configuration module for Hakiki Scanner API.
 
-Loads settings from environment / .env. Centralizes all LLM, API, and
-model configuration so no subsystem reads `os.getenv` directly.
+Loads settings from environment / .env. Centralizes all LLM and API
+configuration so no subsystem reads `os.getenv` directly.
 """
 
 import os
 from functools import lru_cache
-from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -55,11 +54,7 @@ class Settings(BaseModel):
     debug: bool = False
     workers: int = 4
     api_title: str = "Hakiki Scanner API"
-    api_version: str = "1.2.0"
-
-    model_path: str = "../models/efficientnet3class_full_model.pth"
-    device: str = "cuda"
-    model_confidence_threshold: float = 0.30
+    api_version: str = "2.0.0"
 
     max_upload_size_mb: int = 10
     allowed_image_formats: tuple = ("jpeg", "jpg", "png", "webp")
@@ -86,15 +81,6 @@ class Settings(BaseModel):
             return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
         return self.cors_origins if isinstance(self.cors_origins, list) else []
 
-    def get_model_path(self) -> Path:
-        p = Path(self.model_path)
-        if not p.is_absolute():
-            p = Path(__file__).parent / p
-        return p
-
-    def validate_model_exists(self) -> bool:
-        return self.get_model_path().exists()
-
 
 @lru_cache()
 def get_settings() -> Settings:
@@ -103,8 +89,6 @@ def get_settings() -> Settings:
         port=int(os.getenv("API_PORT", "8000")),
         debug=os.getenv("DEBUG", "False").lower() == "true",
         workers=int(os.getenv("WORKERS", "4")),
-        model_path=os.getenv("MODEL_PATH", "../models/efficientnet3class_full_model.pth"),
-        device=os.getenv("DEVICE", "cuda"),
         max_upload_size_mb=int(os.getenv("MAX_UPLOAD_SIZE_MB", "10")),
         cors_origins=os.getenv(
             "CORS_ORIGINS",

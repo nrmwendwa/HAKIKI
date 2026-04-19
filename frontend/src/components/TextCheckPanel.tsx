@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  FileText,
   Search,
   Shield,
   ShieldX,
@@ -61,10 +60,14 @@ const labelConfig: Record<
 };
 
 const exampleClaims = [
-  "Tanzania ina zaidi ya watu milioni 60",
-  "Kiwango cha ukuaji wa Pato la Taifa cha Tanzania mwaka 2023 kilikuwa takriban 5.0%",
-  "Tanzania ina mikoa 26 na wilaya 184",
-  "Chanjo ya COVID-19 nchini Tanzania imezidi 50%",
+"⁠Iran yafunga mlango wa Hormuz",
+"Watoto wanne wafariki dunia Bukoba kwa kuangukiwa na ukuta",
+"⁠Madaktari Bingwa bobezi wawasili nchini kutoa huduma za tiba asili",
+"Bei ya mafuta yapanda kwa asilimia 50 Tanzania",
+"⁠Iran yatangaza vita na Tanzania leo",
+"⁠NMB yatangaza nafasi 10,000 za ajira kwa vijana kote nchini",
+"⁠Mbeya yaongoza zaidi kwa idadi ya maambukizi ya ugonjwa wa Kipindupindu Machi 2026 Tanzania yafungiwa kufanya biashara na nchi za Kiarabu",
+"⁠Kiwango cha ukuaji wa Pato la Taifa cha Tanzania mwaka 2023 kilikuwa takriban 5.0%"
 ];
 
 const TextCheckPanel = () => {
@@ -127,7 +130,6 @@ const TextCheckPanel = () => {
   const evidence = result?.evidence ?? [];
   const primaryEvidence = evidence[0];
   const source = primaryEvidence?.matched_source || "HAKIKI SCANNER";
-  const details = result?.reasoning ?? "";
   const url = primaryEvidence?.matched_url || undefined;
 
   return (
@@ -246,34 +248,9 @@ const TextCheckPanel = () => {
                 </div>
               </div>
 
-              <div className="mt-5">
-                <div className="mb-1.5 flex justify-between text-sm">
-                  <span className="font-medium">Kiwango cha Uhakika</span>
-                  <span className={`font-bold ${config.colorClass}`}>
-                    {result.confidence}%
-                  </span>
-                </div>
-                <div className="h-3 overflow-hidden rounded-full bg-secondary">
-                  <motion.div
-                    className={`h-full rounded-full ${config.barClass}`}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${result.confidence}%` }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
-                </div>
-              </div>
-
+              {result.verdict === "valid" && (
+              <>
               <div className="mt-5 space-y-3 rounded-xl border border-border bg-secondary/30 p-4">
-                <div className="flex items-start gap-3">
-                  <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Maelezo
-                    </p>
-                    <p className="mt-1 text-sm">{details}</p>
-                  </div>
-                </div>
-
                 <div className="flex items-start gap-3">
                   <Shield className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <div>
@@ -304,43 +281,7 @@ const TextCheckPanel = () => {
                 )}
               </div>
 
-              {evidence.length > 0 && (
-                <div className="mt-5 space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Ushahidi
-                  </p>
-                  {evidence.map((item, idx) => (
-                    <div
-                      key={`${item.matched_url || item.matched_source}-${idx}`}
-                      className="rounded-xl border border-border bg-secondary/30 p-3"
-                    >
-                      <p className="text-sm font-medium">{item.claim}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        Chanzo: {item.matched_source}
-                      </p>
-                      {item.verdict_contribution && (
-                        <p className="mt-1 text-xs italic text-muted-foreground">
-                          {item.verdict_contribution}
-                        </p>
-                      )}
-                      {item.similarity > 0 && (
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Ushabihiano: {(item.similarity * 100).toFixed(1)}%
-                        </p>
-                      )}
-                      {item.matched_url && (
-                        <a
-                          href={item.matched_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-2 inline-block text-xs text-primary hover:underline"
-                        >
-                          Tazama Chanzo
-                        </a>
-                      )}
-                    </div>
-                  ))}
-                </div>
+              </>
               )}
 
               <div className="mt-6 flex gap-3">
@@ -368,7 +309,7 @@ const TextCheckPanel = () => {
                       ? "Hatuwezi kuripoti taarifa iliyothibitishwa kuwa ya kweli."
                       : "Tunaweza kuripoti tu taarifa zilizothibitishwa kuwa za uongo."
                   }
-                  mailto={`mailto:info@tcra.go.tz?subject=${encodeURIComponent(
+                  mailto={`mailto:cybercrimeunit@policeforce.go.tz?subject=${encodeURIComponent(
                     "Ripoti ya Taarifa ya Uongo - HAKIKI SCANNER"
                   )}&body=${encodeURIComponent(
                     [
@@ -378,11 +319,9 @@ const TextCheckPanel = () => {
                       "",
                       `Taarifa: "${text.trim()}"`,
                       "Matokeo: YA UONGO",
-                      `Uhakika: ${result.confidence}%`,
-                      `Chanzo cha uhakiki: ${source}`,
                       `Tarehe: ${new Date().toISOString()}`,
                       "",
-                      "Tafadhali chukua hatua zinazohitajika kwa mujibu wa sheria za mawasiliano Tanzania.",
+                      "Tafadhali chukua hatua zinazohitajika kwa mujibu wa Sheria ya Makosa ya Mtandao Tanzania.",
                       "",
                       "Asante.",
                     ].join("\n")

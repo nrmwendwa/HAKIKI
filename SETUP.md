@@ -1,21 +1,21 @@
-# HAKIKI SCANNER - Full Stack Setup Guide
+# HAKIKI SCANNER — Full Stack Setup Guide
 
-Complete setup for running both the frontend and backend together.
+Complete setup for running the frontend and backend together.
 
 ## Project Structure
 
 ```
 hakiki-scanner/
-├── backend/                 # FastAPI backend (Python source only)
-│   ├── main.py
-│   ├── config.py
-│   ├── model_service.py
-│   ├── text_verification.py
+├── backend/                 # FastAPI backend (Python)
+│   ├── main.py              # API app + /validate and /validate-text endpoints
+│   ├── config.py            # Settings (loads .env)
+│   ├── schemas.py
 │   ├── requirements.txt
 │   ├── .env.example
-│   └── text_model/
-│       ├── fake_news_classifier.py
-│       └── scraper.py
+│   ├── llm/                 # LLM gateway (Gemini provider, prompts, registry)
+│   ├── pipelines/           # image / text / document pipelines + router
+│   ├── validation/          # Decision engine (deterministic fusion)
+│   └── verification/        # DDG search + online claim verification
 ├── frontend/                # React/Vite web app
 │   ├── src/
 │   ├── public/
@@ -23,161 +23,71 @@ hakiki-scanner/
 │   ├── package.json
 │   ├── vite.config.ts
 │   └── .env.example
-├── models/                  # Trained ML weights
-│   ├── efficientnet3class_full_model.pth
-│   ├── tanzania_fact_model.pkl
-│   └── tanzania_vectorizer.pkl
-└── data/                    # Raw datasets
+└── data/                    # Reference datasets
     └── tanzania_publicinfo_dataset.csv
 ```
 
 ## Quick Start
 
-### 1. Backend Setup
+### 1. Backend
 
 ```bash
-# Navigate to backend directory
 cd backend
-
-# Install dependencies
 pip install -r requirements.txt --prefer-binary
-
-# Create environment file
 cp .env.example .env
+# IMPORTANT: edit .env and set GEMINI_API_KEY and GEMINI_MODEL
+# (the server will fail to start with a pydantic validation error if these are unset)
 
-# Start the API server
 python main.py
+# or
+python -m uvicorn main:app --port 8000 --reload
 ```
 
-The backend will be available at: **http://localhost:8000**
+Backend: **http://localhost:8000**
 
-### 2. Frontend Setup
+### 2. Frontend
 
-In a **new terminal**:
+In a new terminal:
 
 ```bash
-# Navigate to frontend directory
 cd frontend
-
-# Install dependencies
 npm install
-
-# Create environment file
 cp .env.example .env.local
-
-# Start development server
 npm run dev
 ```
 
-The frontend will be available at: **http://localhost:8080**
+Frontend: **http://localhost:8080**
 
 ## Configuration
 
-### Backend (.env)
-
-Located in `backend/.env`:
+### Backend (`backend/.env`)
 
 ```bash
-# API Configuration
+# API
 API_HOST=0.0.0.0
 API_PORT=8000
 DEBUG=False
 
-# Model Configuration
-MODEL_PATH=../models/efficientnet3class_full_model.pth
-DEVICE=cuda  # or 'cpu' if no GPU
-
-# CORS - Add frontend URLs here
+# CORS — frontend URLs
 CORS_ORIGINS=http://localhost:8080,http://localhost:3000,http://localhost:5173
+
+# LLM (required — server will not start without these)
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+LLM_PRIMARY_PROVIDER=gemini
 ```
 
-### Frontend (.env.local)
-
-Located in `frontend/.env.local`:
+### Frontend (`frontend/.env.local`)
 
 ```bash
-# API URL - Must match backend address
 VITE_API_URL=http://localhost:8000
 ```
 
 ## Testing the Integration
 
-1. **Open Frontend**
-   - Navigate to http://localhost:8080
-   - You should see the HAKIKI SCANNER landing page
-
-2. **Test the API**
-   - Go to http://localhost:8000/docs (Swagger UI)
-   - Click "Try it out" on the `/predict` endpoint
-   - Upload an image file to test
-
-3. **Test End-to-End**
-   - Click "Start Scanning" or navigate to Scanner page
-   - Upload an image
-   - Should receive real prediction from backend
-
-## Troubleshooting
-
-### Backend won't start
-```bash
-# Check if port 8000 is in use
-lsof -i :8000
-
-# Kill process if needed
-kill -9 <PID>
-
-# Or change port in backend/.env
-API_PORT=8001
-```
-
-### Frontend won't connect to backend
-- Check `VITE_API_URL` in `.env.local`
-- Ensure backend is running at that URL
-- Check browser console for CORS errors
-- Verify `CORS_ORIGINS` in `backend/.env`
-
-### Model loading fails
-```
-Error: Model file not found
-```
-- Ensure `models/efficientnet3class_full_model.pth` exists at the repo root
-- Check `MODEL_PATH` in `backend/.env` (defaults to `../models/efficientnet3class_full_model.pth`)
-- Relative paths are resolved from the backend directory
-
-### CUDA errors
-If you don't have a GPU or get CUDA errors:
-```bash
-# In backend/.env
-DEVICE=cpu
-```
-
-## Development Workflow
-
-### Terminal 1 - Backend
-```bash
-cd backend
-python main.py
-# Runs on http://localhost:8000
-```
-
-### Terminal 2 - Frontend
-```bash
-cd frontend
-npm run dev
-# Runs on http://localhost:8080
-```
-
-### Making Changes
-
-**Backend Changes:**
-- Edit `backend/main.py`, `config.py`, `model_service.py`
-- No restart needed if `DEBUG=True` in `.env` (hot reload enabled)
-- If changes don't appear, manually restart: `Ctrl+C` then `python main.py`
-
-**Frontend Changes:**
-- Edit files in `frontend/src/`
-- Changes auto-apply via Vite hot module replacement
-- Check browser console for errors
+1. Open http://localhost:8080 — HAKIKI SCANNER landing page.
+2. Open http://localhost:8000/docs — Swagger UI. Try `/validate` or `/validate-text`.
+3. From the app, submit a text claim or upload an image — should get a `DecisionResult` back.
 
 ## API Endpoints
 
@@ -186,63 +96,78 @@ npm run dev
 curl http://localhost:8000/health
 ```
 
-### Predict (Image Analysis)
+### Validate (image or document upload)
 ```bash
-curl -X POST -F "image=@face.jpg" http://localhost:8000/predict
+curl -X POST -F "file=@photo.jpg" http://localhost:8000/validate
+curl -X POST -F "file=@report.pdf" http://localhost:8000/validate
+```
+
+### Validate Text
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"text": "Claim to validate"}' \
+  http://localhost:8000/validate-text
 ```
 
 ### Interactive Docs
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
+## Troubleshooting
+
+### Backend won't start
+
+**Pydantic `ValidationError` on `LLMSettings`:**
+- `GEMINI_MODEL` is unset. Set it in `backend/.env` (e.g. `GEMINI_MODEL=gemini-2.5-flash`).
+- Also ensure `GEMINI_API_KEY` is set.
+
+**Port already in use:**
+```bash
+lsof -ti:8000 | xargs kill -9
+# or change API_PORT in backend/.env
+```
+
+### Frontend won't connect to backend
+- Check `VITE_API_URL` in `frontend/.env.local`.
+- Ensure backend is running at that URL.
+- Check browser console for CORS errors; verify `CORS_ORIGINS` in `backend/.env`.
+
+## Development Workflow
+
+### Terminal 1 — Backend
+```bash
+cd backend
+python main.py
+```
+
+### Terminal 2 — Frontend
+```bash
+cd frontend
+npm run dev
+```
+
+### Making Changes
+- **Backend**: hot reload enabled when `DEBUG=True`. Otherwise restart with `Ctrl+C` then `python main.py`.
+- **Frontend**: Vite HMR auto-applies changes.
+
 ## Production Deployment
 
-See `backend/README.md` for production deployment options:
-- Gunicorn + systemd
-- Docker + Docker Compose
-- Nginx reverse proxy
-- Cloud platforms (AWS, GCP, etc.)
+See [backend/README.md](backend/README.md) for Gunicorn, Docker, and Nginx setup.
 
-## Key Files
+## Response Format
 
-**Frontend Integration Points:**
-- `frontend/src/components/ScannerPage.tsx` - Makes API calls to `/predict`
-- `frontend/src/components/Navbar.tsx` - Navigation and branding
-- `frontend/.env.local` - Frontend configuration
-
-**Backend Integration Points:**
-- `backend/main.py` - FastAPI app with `/predict` endpoint
-- `backend/model_service.py` - Image processing and inference
-- `backend/.env` - Backend configuration
-
-## Branding
-
-The app is now branded as **HAKIKI SCANNER**:
-- Navbar displays "HAKIKI SCANNER"
-- Landing page text updated
-- All references changed from "HAKIKI AI"
-
-## API Response Format
-
-When you upload an image, you get:
+`/validate` and `/validate-text` both return a `DecisionResult`:
 
 ```json
 {
-  "verdict": "real",
-  "confidence": 87.45,
-  "scores": {
-    "real": 87.45,
-    "suspicious": 8.92,
-    "fake": 3.63
-  }
+  "verdict": "valid | suspicious | invalid",
+  "confidence": 82.5,
+  "reasoning": "Swahili explanation",
+  "evidence": [ { "claim": "...", "matched_source": "...", "matched_url": "...", "similarity": 0.87, "verdict_contribution": "..." } ],
+  "signals": { "claim_score": 0.9, "image_authenticity": null, "source_trust": 0.5, "weights_used": {}, "raw_score": 0.78 },
+  "input_type": "text",
+  "deepfake_scores": null,
+  "pipeline_errors": [],
+  "trace": {}
 }
 ```
-
-## Next Steps
-
-1. ✅ Run backend: `cd backend && python main.py`
-2. ✅ Run frontend: `cd frontend && npm run dev`
-3. ✅ Open http://localhost:8080
-4. ✅ Test the scanner with images
-
-Need help? Check the logs in both terminal windows for detailed error messages.

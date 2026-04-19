@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, X, Shield, AlertTriangle, ShieldX, Loader2, ExternalLink } from "lucide-react";
+import { Upload, X, Shield, AlertTriangle, ShieldX, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ShareMenu from "@/components/ShareMenu";
@@ -110,12 +110,11 @@ const ImageScanPanel = () => {
 
   const colorKey: Verdict | null = decision ? decisionVerdictToColorKey[decision.verdict] : null;
   const primaryConfig = colorKey ? verdictConfig[colorKey] : null;
-  const confidencePct = decision ? Math.round(decision.confidence ?? 0) : 0;
   const scores: DeepfakeScores | null = decision?.deepfake_scores ?? null;
 
   const shareText =
     decision && decision.verdict === "valid"
-      ? `✅ IMETHIBITISHWA: Picha imehakikiwa (${confidencePct}% uhakika). Imehakikiwa na HAKIKI SCANNER.`
+      ? `✅ IMETHIBITISHWA: Picha imehakikiwa. Imehakikiwa na HAKIKI SCANNER.`
       : "";
 
   const shareDisabledReason =
@@ -205,21 +204,6 @@ const ImageScanPanel = () => {
                   </div>
                 </div>
 
-                <div className="mt-5">
-                  <div className="mb-1.5 flex justify-between text-sm">
-                    <span className="font-medium">Kiwango cha Uhakika</span>
-                    <span className={`font-bold ${primaryConfig.colorClass}`}>{confidencePct}%</span>
-                  </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-secondary">
-                    <motion.div
-                      className={`h-full rounded-full ${primaryConfig.barClass}`}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${confidencePct}%` }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
-                    />
-                  </div>
-                </div>
-
                 {scores && (
                   <div className="mt-6 space-y-4">
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -239,47 +223,6 @@ const ImageScanPanel = () => {
                             transition={{ duration: 0.8, delay: 0.2 }}
                           />
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {decision.reasoning && (
-                  <div className="mt-6 rounded-xl border border-border bg-background/40 p-4">
-                    <p className="mb-2 text-sm font-semibold">Maelezo ya Uamuzi</p>
-                    <p className="text-sm text-muted-foreground">{decision.reasoning}</p>
-                  </div>
-                )}
-
-                {decision.evidence.length > 0 && (
-                  <div className="mt-4 space-y-3">
-                    <p className="text-sm font-semibold">Ushahidi</p>
-                    {decision.evidence.map((item, idx) => (
-                      <div
-                        key={`${item.claim}-${idx}`}
-                        className="rounded-xl border border-border bg-background/40 p-4"
-                      >
-                        <p className="text-sm font-medium">{item.claim}</p>
-                        {item.matched_source && (
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            Chanzo: {item.matched_source}
-                          </p>
-                        )}
-                        {item.verdict_contribution && (
-                          <p className="mt-1 text-xs italic text-muted-foreground">
-                            {item.verdict_contribution}
-                          </p>
-                        )}
-                        {item.matched_url && (
-                          <a
-                            href={item.matched_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                          >
-                            <ExternalLink className="h-3 w-3" /> Tazama Chanzo
-                          </a>
-                        )}
                       </div>
                     ))}
                   </div>
@@ -313,7 +256,7 @@ const ImageScanPanel = () => {
                     label="Ripoti Picha"
                     disabled={decision.verdict !== "invalid"}
                     disabledReason={reportDisabledReason}
-                    mailto={`mailto:info@tcra.go.tz?subject=${encodeURIComponent(
+                    mailto={`mailto:cybercrimeunit@policeforce.go.tz?subject=${encodeURIComponent(
                       "Ripoti ya Picha Feki - HAKIKI SCANNER"
                     )}&body=${encodeURIComponent(
                       [
@@ -322,7 +265,6 @@ const ImageScanPanel = () => {
                         "Ninaripoti picha iliyogundulika kuwa feki na HAKIKI SCANNER:",
                         "",
                         "Matokeo: SI SAHIHI",
-                        `Uhakika: ${confidencePct}%`,
                         scores
                           ? `Alama: Halisi ${Math.round(scores.real)}% | Inatia shaka ${Math.round(scores.suspicious)}% | Feki ${Math.round(scores.fake)}%`
                           : "",

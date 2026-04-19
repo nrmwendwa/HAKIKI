@@ -6,6 +6,64 @@
 
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 12%;
+
+    --primary: 152 65% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 15% 95%;
+    --secondary-foreground: 220 20% 12%;
+
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 42 90% 50%;
+    --accent-foreground: 220 20% 12%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --suspicious: 38 92% 48%;
+    --suspicious-foreground: 0 0% 100%;
+
+    --safe: 152 65% 38%;
+    --safe-foreground: 0 0% 100%;
+
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 152 65% 38%;
+
+    --radius: 0.75rem;
+
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    --gradient-hero: linear-gradient(135deg, hsl(152 65% 38% / 0.12), hsl(42 90% 50% / 0.06), transparent);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 15% 98%));
+    --gradient-safe: linear-gradient(135deg, hsl(152 65% 38%), hsl(152 65% 30%));
+    --gradient-suspicious: linear-gradient(135deg, hsl(38 92% 50%), hsl(28 90% 45%));
+    --gradient-fake: linear-gradient(135deg, hsl(0 72% 50%), hsl(0 72% 40%));
+    --shadow-glow: 0 0 40px hsl(152 65% 38% / 0.15);
+    --shadow-card: 0 8px 24px hsl(220 20% 40% / 0.08);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 20% 12%;
+    --sidebar-primary: 152 65% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 95%;
+    --sidebar-accent-foreground: 220 20% 12%;
+    --sidebar-border: 220 15% 88%;
+    --sidebar-ring: 152 65% 38%;
+  }
+
+  .dark {
     --background: 220 20% 7%;
     --foreground: 60 10% 92%;
 
@@ -39,11 +97,6 @@
     --border: 220 15% 18%;
     --input: 220 15% 18%;
     --ring: 152 70% 45%;
-
-    --radius: 0.75rem;
-
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-body: 'Inter', sans-serif;
 
     --gradient-hero: linear-gradient(135deg, hsl(152 70% 45% / 0.15), hsl(42 90% 55% / 0.08), transparent);
     --gradient-card: linear-gradient(180deg, hsl(220 18% 12%), hsl(220 18% 9%));

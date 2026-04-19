@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Navbar = () => {
   return (
@@ -26,11 +27,14 @@ const Navbar = () => {
             Inavyofanya Kazi
           </Link>
         </div>
-        <Link to="/scan">
-          <Button variant="hero" size="lg">
-            Anza Kuhakiki
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Link to="/scan">
+            <Button variant="hero" size="lg">
+              Anza Kuhakiki
+            </Button>
+          </Link>
+        </div>
       </div>
     </nav>
   );
